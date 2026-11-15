@@ -25,17 +25,17 @@ public final class States {
     private final boolean IS_ACCEPT;
 
     private States(String REPRESENTATION, boolean IS_REJECT, boolean IS_ACCEPT) {
+        this.ID = ID_GENERATOR.getAndIncrement(); // Gera um ID único para esse estado
+        this.REPRESENTATION = REPRESENTATION;
+        this.IS_REJECT = IS_REJECT;
+        this.IS_ACCEPT = IS_ACCEPT;
+
         if (IS_REJECT && IS_ACCEPT) {
             throw new InvalidStateException(
                 "Um estado não pode ser de aceitação e rejeição simultaneamente!" +
                 " (\'" + this.toString() + "\')"
             );
         }
-
-        this.ID = ID_GENERATOR.getAndIncrement(); // Gera um ID único para esse estado
-        this.REPRESENTATION = REPRESENTATION;
-        this.IS_REJECT = IS_REJECT;
-        this.IS_ACCEPT = IS_ACCEPT;
     }
 
     /**
