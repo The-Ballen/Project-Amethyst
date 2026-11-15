@@ -10,7 +10,7 @@ public enum Symbol {
     
     // [...]
 
-    BLANK('_', false, true);
+    BLANK('_', true, false);
 
     private final char REPRESENTATION;
     private final boolean IS_BLANK;
