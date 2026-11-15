@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.amethyst.automata.machine.States;
+import com.amethyst.automata.machine.State;
 import com.amethyst.automata.machine.alphabet.Symbol;
 import com.amethyst.automata.machine.tape.HeadDirection;
 import com.amethyst.automata.machine.transition.action.SingleTapeAction;
@@ -14,7 +14,7 @@ import com.amethyst.automata.machine.transition.action.SingleTapeAction;
 public class TransitionFunction {
     // Mapa externo: Estado Atual -> Mapa interno
     // Mapa interno: Símbolo Lido -> Ação
-    private final Map<States, Map<Symbol, SingleTapeAction>> delta;
+    private final Map<State, Map<Symbol, SingleTapeAction>> delta;
 
     public TransitionFunction() {
         this.delta = new HashMap<>(); // Mapa que armazenará as regras de transições
@@ -24,9 +24,9 @@ public class TransitionFunction {
      * Registra uma regra: δ(currentState, readSymbol) = (nextState, writeSymbol, direction)
      */
     public TransitionFunction addRule(
-            States currentState,
+            State currentState,
             Symbol readSymbol,
-            States nextState,
+            State nextState,
             Symbol writeSymbol,
             HeadDirection direction) {
 
@@ -46,7 +46,7 @@ public class TransitionFunction {
     /**
      * Executa a transição. Retorna Optional.empty() se não houver transição definida.
      */
-    public Optional<SingleTapeAction> apply(States currentState, Symbol readSymbol) {
+    public Optional<SingleTapeAction> apply(State currentState, Symbol readSymbol) {
         // Resgata o mapa de regras para o estado atual (Símbolo -> Ação)
         Map<Symbol, SingleTapeAction> stateRules = delta.get(currentState);
 

@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.amethyst.automata.machine.States;
+import com.amethyst.automata.machine.State;
 import com.amethyst.automata.machine.alphabet.Symbol;
 import com.amethyst.automata.machine.exception.AutomatonException;
 import com.amethyst.automata.machine.exception.InvalidDirectionException;
@@ -56,9 +56,9 @@ public final class RuleLoader {
                 }
 
                 // Extrai os 5 elementos dos grupos da expressão regular
-                States currentState = States.of(matcher.group(1));
+                State currentState = State.of(matcher.group(1));
                 Symbol readSymbol   = parseSymbol(matcher.group(2).charAt(0), lineNumber);
-                States nextState    = States.of(matcher.group(3)); // Se o estado não já existir, cria ele agora
+                State nextState    = State.of(matcher.group(3)); // Se o estado não já existir, cria ele agora
                 Symbol writeSymbol  = parseSymbol(matcher.group(4).charAt(0), lineNumber);
                 HeadDirection dir   = parseDirection(matcher.group(5), lineNumber);
 

@@ -2,12 +2,12 @@ package com.amethyst.automata.machine.transition.action;
 
 import java.util.Objects;
 
-import com.amethyst.automata.machine.States;
+import com.amethyst.automata.machine.State;
 import com.amethyst.automata.machine.alphabet.Symbol;
 import com.amethyst.automata.machine.tape.HeadDirection;
 
 public record SingleTapeAction (
-    States nextState,
+    State nextState,
     Symbol writeSymbol,
     HeadDirection direction
 ) {
