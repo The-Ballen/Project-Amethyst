@@ -7,6 +7,7 @@ import com.amethyst.automata.machine.exception.InvalidSymbolException;
 
 public enum Symbol {
     X('X', false, true),
+    O('O', false, true),
     
     // [...]
 
