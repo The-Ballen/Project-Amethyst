@@ -35,6 +35,10 @@ public enum States {
         return IS_ACCEPT;
     }
 
+    public boolean isHalting() {
+        return IS_REJECT || IS_ACCEPT;
+    }
+
     @Override
     public String toString() {
         return REPRESENTATION;
