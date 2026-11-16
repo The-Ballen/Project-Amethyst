@@ -1,0 +1,70 @@
+name: Build JAR and Auto Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # Para ler o histórico de tags e commits
+
+      - name: 2. Setup Java JDK
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+          cache: 'gradle' # Faz cache das dependências do Gradle para acelerar builds futuros
+
+      - name: 3. Build executable JAR with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build --no-daemon
+
+      - name: 4. Check if any Git tag already exists
+        id: check_tags
+        run: |
+          git fetch --tags --force
+          if [ -z "$(git tag -l)" ]; then
+            echo "first_release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "first_release=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 5. Bump version and create tag
+        id: bump_version
+        uses: mathieudutour/github-tag-action@v7
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.check_tags.outputs.first_release == 'true' && '1.0.0' || '' }} # No 1º push cria v1.0.0
+          default_bump: patch # Incrementa de vX.Y.Z para vX.Y.(Z+1) por padrão
+          force_bump: patch # Garante que todo push válido gere nova tag
+
+      - name: 6. Create GitHub Release
+        if: steps.bump_version.outputs.new_tag != ''
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.bump_version.outputs.new_tag }}
+          name: "Release ${{ steps.bump_version.outputs.new_tag }}"
+          body: |
+            ## Project Amethyst - Release (${{ steps.bump_version.outputs.new_tag }})
+
+            Pacote `.jar` executável compilado automaticamente via Gradle e publicado via GitHub Actions a partir do commit [`${{ github.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+
+            ### Changelog
+            ${{ steps.bump_version.outputs.changelog }}
+          files: build/libs/Automata.jar
+          generate_release_notes: false
